@@ -28,15 +28,13 @@
                 <th>Age</th>
               </tr>
             </thead>
-            <tbody>
-              <div id="inner-table">
+            <tbody id="t-body">
                 {% for person in people %}
                   <tr>
                     <td>{{ person.name }}</td>
                     <td>{{ person.age }}</td>
                   </tr>
                 {% endfor %}
-              </div>
             </tbody>
           </table>
         </div>
@@ -51,7 +49,7 @@
       $('#submit').on('click', function(e){
         e.preventDefault();
         $.post('/age', $('#form').serialize(), function(data){
-          $('#inner-table').html(data['html']);
+          $('#t-body').html(data['html']);
         }, 'json');
       });
     </script>
