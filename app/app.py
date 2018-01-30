@@ -20,7 +20,7 @@ def get_age():
   
 @app.route('/')
 def index():
-  people = Person.query.all()
+  people = Person.query.limit(50).all()
   return render_template('index.html', people=people)
 
 if __name__ == '__main__':
