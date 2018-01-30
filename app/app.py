@@ -1,24 +1,23 @@
-from flask import Flask, render_template, request, redirect
-from flask_sqlalchemy import SQLAlchemy 
+from flask import Flask, render_template, request, jsonify
+from models import db, Person
 import os 
 
 app = Flask(__name__)
-# Hack to get locally working when running create_db.py
-try:
-  app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
-except KeyError:
-  with open('.env', 'r') as fp:
-    lines = fp.readlines()
-  app_vars = {i.split('=')[0]:i.split('=')[1][1:-2] for i in lines}
-  app.config['SQLALCHEMY_DATABASE_URI'] = app_vars['DATABASE_URL']
 
-db = SQLAlchemy(app)
+# Don't forget to export DATAbASE_URL must be an environment variable
+# Heroku will do this automatically if we create use the postgres
+# addon
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 
-class Person(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), nullable=False)
-    age = db.Column(db.Integer)
+db.init_app(app)
 
+@app.route('/age', methods=['POST'])
+def get_age():
+  age = request.form['age']
+  people = Person.query.filter_by(age=age).all()
+  html="".join(person.to_row() for person in people)
+  return jsonify(html=html)
+  
 @app.route('/')
 def index():
   people = Person.query.all()

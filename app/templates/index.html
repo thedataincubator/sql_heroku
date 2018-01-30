@@ -4,10 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Skeleton application demoing Heroku and Flask integration.">
-    <meta name="author" content="@gotoariel">
     <!-- <link rel="icon" href="favicon.ico"> -->
 
-    <title>Wilkommen, bienvenue, and welcome to Heroku!</title>
+    <title>Age</title>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -16,7 +15,12 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-12 text-left">
-          <h2>All People</h2>
+          <h2>People</h2>
+          Enter an age:
+          <form id="form">
+            <input name="age" type="number">
+            <button id="submit">Submit</button>
+          </form>
           <table class="table">
             <thead>
               <tr>
@@ -25,12 +29,14 @@
               </tr>
             </thead>
             <tbody>
-              {% for person in people %}
-                <tr>
-                  <td>{{ person.name }}</td>
-                  <td>{{ person.age }}</td>
-                </tr>
-              {% endfor %}
+              <div id="inner-table">
+                {% for person in people %}
+                  <tr>
+                    <td>{{ person.name }}</td>
+                    <td>{{ person.age }}</td>
+                  </tr>
+                {% endfor %}
+              </div>
             </tbody>
           </table>
         </div>
@@ -41,5 +47,13 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+      $('#submit').on('click', function(e){
+        e.preventDefault();
+        $.post('/age', $('#form').serialize(), function(data){
+          $('#inner-table').html(data['html']);
+        }, 'json');
+      });
+    </script>
   </body>
 </html>
